@@ -8,6 +8,12 @@ defineProps<{
 
 <template>
   <RouterLink
+    :to="{
+      name: 'plan',
+      params: {
+        id: plan.id,
+      },
+    }"
     class="flex items-center gap-2 p-2 rounded-lg border border-gray-100 hover:bg-gray-100"
   >
     <div class="flex items-center justify-center p-2 rounded-full bg-primary-50 text-primary-700">

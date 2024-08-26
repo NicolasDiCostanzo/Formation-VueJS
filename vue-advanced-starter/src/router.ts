@@ -17,8 +17,24 @@ const router = createRouter({
     },
     {
       path: '/plans',
-      name: 'plans',
-      component: () => import('./pages/PagePlans.vue'),
+      children: [
+        {
+          path: '',
+          name: 'plans',
+          component: () => import('./pages/PagePlans.vue'),
+
+        },
+        {
+          path: ':id',
+          name: 'plan',
+          component: () => import('./pages/PagePlan.vue'),
+        },
+        {
+          path: 'new',
+          name: 'new-plan',
+          component: () => import('./pages/PagePlanNew.vue'),
+        },
+      ],
     },
     {
       path: '/:matched(.*)*',
