@@ -1,16 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import type { Plan } from '@/util/types'
+import { wait } from '@/util/time'
 
 const plans = ref<Array<Plan>>([])
-
-onMounted(async () => {
-  fetch('/api/plans')
-    .then(res => res.json())
-    .then((data) => {
-      plans.value = data
-    })
-})
+await wait(1000)
+plans.value = await fetch('/api/plans').then(res => res.json())
 </script>
 
 <template>
