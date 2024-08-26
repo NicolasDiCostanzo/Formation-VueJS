@@ -4,7 +4,7 @@ import type { Plan } from '@/util/types'
 import { wait } from '@/util/time'
 
 const plans = ref<Array<Plan>>([])
-await wait(1000)
+await wait(250)
 plans.value = await fetch('/api/plans').then(res => res.json())
 </script>
 

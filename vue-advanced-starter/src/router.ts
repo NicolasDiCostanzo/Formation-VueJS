@@ -32,7 +32,7 @@ const router = createRouter({
         {
           path: 'new',
           name: 'new-plan',
-          component: () => import('./pages/PagePlanNew.vue'),
+          component: () => import('./components/PlanForm.vue'),
         },
       ],
     },
