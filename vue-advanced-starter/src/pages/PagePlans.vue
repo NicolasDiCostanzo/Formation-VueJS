@@ -1,5 +1,16 @@
 <script lang="ts" setup>
-// TODO
+import { onMounted, ref } from 'vue'
+import type { Plan } from '@/util/types'
+
+const plans = ref<Array<Plan>>([])
+
+onMounted(async () => {
+  fetch('/api/plans')
+    .then(res => res.json())
+    .then((data) => {
+      plans.value = data
+    })
+})
 </script>
 
 <template>
@@ -8,19 +19,19 @@
       My Plans
     </h1>
 
-    <!-- <BaseEmpty>
+    <BaseEmpty>
       <IconLucideMap class="w-8 h-8 text-gray-300" />
-      <div>No plans found</div>
-      <BaseButton
-        to="/plans/new"
-      >
+      <div v-if="plans?.length <= 0">
+        No plans found
+      </div>
+      <BaseButton to="/plans/new">
         <IconLucidePlus />
         Create a Plan
       </BaseButton>
-    </BaseEmpty> -->
+    </BaseEmpty>
 
     <div class="grid md:grid-cols-2 gap-2">
-      <!-- Plan list items here -->
+      <PlanListItem v-for="plan in plans" :key="plan.id" :plan />
     </div>
   </div>
 </template>

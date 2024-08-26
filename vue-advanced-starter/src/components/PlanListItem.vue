@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-// TODO
+import type { Plan } from '@/util/types'
+
+defineProps<{
+  plan: Plan
+}>()
 </script>
 
 <template>
