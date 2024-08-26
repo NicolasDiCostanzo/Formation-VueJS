@@ -1,6 +1,20 @@
 {
-  "plans": [
-  ],
+  "plans": [{
+    "id": "cat",
+    "name": "meow",
+    "description": "cool cat description",
+    "userId": "cat"
+  }, {
+    "id": "dog",
+    "name": "woof",
+    "description": "cool dog description",
+    "userId": "dog"
+  }, {
+    "id": "opossum",
+    "name": "Leonard",
+    "description": "awesome opossum description",
+    "userId": "leonard"
+  }],
   "users": [
     {
       "id": "cat",
