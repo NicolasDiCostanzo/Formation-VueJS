@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import type { Plan } from '@/util/types'
 import { wait } from '@/util/time'
 

@@ -7,7 +7,14 @@ import AppHeader from './components/AppHeader.vue'
 <template>
   <div class="min-h-screen flex flex-col">
     <AppHeader />
-    <RouterView />
+    <RouterView v-slot="{ Component }">
+      <Suspense :timeout="0">
+        <component :is="Component" />
+        <template #fallback>
+          <BaseLoading />
+        </template>
+      </Suspense>
+    </RouterView>
 
     <!-- <AppNotifications /> -->
   </div>
