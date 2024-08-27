@@ -2,10 +2,8 @@
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Plan } from '@/util/types'
-
-defineProps<{
-  error: string | null
-}>()
+import { fetchWithThrow, useAsyncFn } from '@/util/async'
+import { wait } from '@/util/time'
 
 const router = useRouter()
 
@@ -14,7 +12,8 @@ const plan = ref<Plan>()
 plan.value = await fetch(`/api/plans/${route.params.id}`).then(r => r.json())
 
 async function updatePlan() {
-  const result = await fetch(`/api/plans/${plan.value!.id}`, {
+  await wait(1000)
+  const result = await fetchWithThrow(`/api/plans/${plan.value!.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -30,6 +29,8 @@ async function updatePlan() {
     },
   })
 }
+
+const { loading, error, run } = useAsyncFn(updatePlan)
 </script>
 
 <template>
@@ -42,11 +43,9 @@ async function updatePlan() {
       v-if="plan"
       v-model:name="plan.name"
       v-model:description="plan.description"
-      @submit="updatePlan()"
-    />
-    <BaseError
-      v-else
       :error
+      :loading
+      @submit="run()"
     />
   </div>
 </template>

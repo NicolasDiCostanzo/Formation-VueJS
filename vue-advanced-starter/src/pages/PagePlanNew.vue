@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PlanForm from '@/components/PlanForm.vue'
 import type { Plan } from '@/util/types'
+import { fetchWithThrow, useAsyncFn } from '@/util/async'
 
 const newPlan = ref<Pick<Plan, 'name' | 'description'>>({
   name: '',
@@ -12,7 +13,7 @@ const newPlan = ref<Pick<Plan, 'name' | 'description'>>({
 const router = useRouter()
 
 async function createPlan() {
-  const result = await fetch('/api/plans', {
+  const result = await fetchWithThrow('/api/plans', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,6 +33,8 @@ async function createPlan() {
 
   return result
 }
+
+const { loading, error, run } = useAsyncFn(createPlan)
 </script>
 
 <template>
@@ -43,7 +46,9 @@ async function createPlan() {
     <PlanForm
       v-model:name="newPlan.name"
       v-model:description="newPlan.description"
-      @submit="createPlan()"
+      :error
+      :loading
+      @submit="run()"
     />
   </div>
 </template>
