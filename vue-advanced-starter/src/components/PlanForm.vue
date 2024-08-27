@@ -5,17 +5,18 @@ defineProps<{
   error?: Error | string | null
 }>()
 
-const temp = reactive({
-  name: '',
-  description: '',
-})
+defineEmits<{
+  submit: []
+}>()
+
+const name = defineModel<string>('name', { required: true })
+const description = defineModel<string>('description', { required: true })
 </script>
 
 <template>
-  <form class="flex flex-col gap-6">
-    <pre> {{ temp }}</pre>
+  <form class="flex flex-col gap-6" @submit.prevent="$emit('submit')">
     <BaseInput
-      v-model="temp.name"
+      v-model="name"
       required
       label="Name"
       maxlength="50"
@@ -23,7 +24,7 @@ const temp = reactive({
     />
 
     <BaseInput
-      v-model="temp.description"
+      v-model="description"
       required
       label="Description"
       textarea

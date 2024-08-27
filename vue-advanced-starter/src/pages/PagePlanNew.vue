@@ -1,5 +1,37 @@
 <script lang="ts" setup>
-// TODO
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import PlanForm from '@/components/PlanForm.vue'
+import type { Plan } from '@/util/types'
+
+const newPlan = ref<Pick<Plan, 'name' | 'description'>>({
+  name: '',
+  description: '',
+})
+
+const router = useRouter()
+
+async function createPlan() {
+  const result = await fetch('/api/plans', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ...newPlan.value,
+      userId: 'cat',
+    }),
+  })
+  const data = await result.json()
+  router.push({
+    name: 'plans',
+    params: {
+      id: data.id,
+    },
+  })
+
+  return result
+}
 </script>
 
 <template>
@@ -8,6 +40,10 @@
       New Plan
     </h1>
 
-    <!-- Form here -->
+    <PlanForm
+      v-model:name="newPlan.name"
+      v-model:description="newPlan.description"
+      @submit="createPlan()"
+    />
   </div>
 </template>
