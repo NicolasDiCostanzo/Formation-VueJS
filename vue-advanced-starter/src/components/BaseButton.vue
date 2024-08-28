@@ -5,9 +5,8 @@ import { computed } from 'vue'
 const props = defineProps<{
   to?: string
   href?: string
+  loading?: boolean
 }>()
-
-const loading = false // TODO Turn into a prop
 
 const Kind = computed(() => {
   if (props.to && props.href) {
