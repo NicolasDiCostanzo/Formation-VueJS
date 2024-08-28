@@ -25,9 +25,6 @@
           <IconLucideLogIn />
           Login
         </BaseButton>
-        <BaseButton href="https://vuejs.org">
-          VueJS
-        </BaseButton>
       </div>
     </div>
     <img src="@/assets/hero.png" alt="Illustration" class="max-w-[500px]">
