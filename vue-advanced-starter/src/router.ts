@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from './stores/user'
 
 // TODO extends router meta
 
@@ -16,35 +17,59 @@ const router = createRouter({
       component: () => import('./pages/PageLogin.vue'),
     },
     {
-      path: '/plans',
+      path: '/settings',
+      name: 'settings',
+      component: () => import('./pages/PageSettings.vue'),
+    },
+    {
+      path: '',
+      meta: {
+        requiresAuth: true,
+      },
       children: [
         {
-          path: '',
-          name: 'plans',
-          component: () => import('./pages/PagePlans.vue'),
+          path: '/plans',
+          children: [
+            {
+              path: '',
+              name: 'plans',
+              component: () => import('./pages/PagePlans.vue'),
 
+            },
+            {
+              path: ':id',
+              name: 'plan',
+              component: () => import('./pages/PagePlan.vue'),
+            },
+            {
+              path: 'new',
+              name: 'new-plan',
+              component: () => import('./pages/PagePlanNew.vue'),
+            },
+          ],
         },
         {
-          path: ':id',
-          name: 'plan',
-          component: () => import('./pages/PagePlan.vue'),
-        },
-        {
-          path: 'new',
-          name: 'new-plan',
-          component: () => import('./pages/PagePlanNew.vue'),
+          path: '/:matched(.*)*',
+          name: 'not-found',
+          component: () => import('./pages/Page404.vue'),
         },
       ],
     },
-    {
-      path: '/:matched(.*)*',
-      name: 'not-found',
-      component: () => import('./pages/Page404.vue'),
-    },
-    // TODO add plans routes
+
   ],
 })
+router.beforeEach((to) => {
+  const userStore = useUserStore()
 
-// TODO auth guard
+  if (to.meta.requiresAuth && !userStore.currentUser) {
+    return {
+      path: '/login',
+      query: {
+        name: 'login',
+        redirect: to.name,
+      },
+    }
+  }
+})
 
 export default router
