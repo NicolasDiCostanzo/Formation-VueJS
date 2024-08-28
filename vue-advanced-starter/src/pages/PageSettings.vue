@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-// TODO
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+
+function logout() {
+  userStore.logoutOperation.run()
+}
 </script>
 
 <template>
@@ -9,7 +15,7 @@
     </h1>
 
     <div>
-      <BaseButton>
+      <BaseButton @click="logout()">
         <IconLucideLogOut />
         Logout
       </BaseButton>

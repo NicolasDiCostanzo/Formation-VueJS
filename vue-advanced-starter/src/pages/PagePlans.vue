@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import type { Plan } from '@/util/types'
-import { wait } from '@/util/time'
+import { usePlanStore } from '@/stores/plan'
 
-const plans = ref<Array<Plan>>([])
-await wait(250)
-plans.value = await fetch('/api/plans').then(res => res.json())
+const planStore = usePlanStore()
+await planStore.fetchPlans()
 </script>
 
 <template>
@@ -16,7 +13,7 @@ plans.value = await fetch('/api/plans').then(res => res.json())
 
     <BaseEmpty>
       <IconLucideMap class="w-8 h-8 text-gray-300" />
-      <div v-if="plans?.length <= 0">
+      <div v-if="planStore.plans?.length <= 0">
         No plans found
       </div>
       <BaseButton to="/plans/new">
@@ -26,7 +23,7 @@ plans.value = await fetch('/api/plans').then(res => res.json())
     </BaseEmpty>
 
     <div class="grid md:grid-cols-2 gap-2">
-      <PlanListItem v-for="plan in plans" :key="plan.id" :plan />
+      <PlanListItem v-for="plan in planStore.plans" :key="plan.id" :plan />
     </div>
   </div>
 </template>

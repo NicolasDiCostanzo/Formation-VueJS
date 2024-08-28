@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PlanForm from '@/components/PlanForm.vue'
 import type { Plan } from '@/util/types'
-import { fetchWithThrow, useAsyncFn } from '@/util/async'
+import { usePlanStore } from '@/stores/plan'
 
 const newPlan = ref<Pick<Plan, 'name' | 'description'>>({
   name: '',
@@ -11,30 +11,14 @@ const newPlan = ref<Pick<Plan, 'name' | 'description'>>({
 })
 
 const router = useRouter()
+const planStore = usePlanStore()
 
-async function createPlan() {
-  const result = await fetchWithThrow('/api/plans', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      ...newPlan.value,
-      userId: 'cat',
-    }),
-  })
-  const data = await result.json()
+async function createPlan(): Promise<void> {
+  await planStore.createPlanOperation.run(newPlan.value)
   router.push({
     name: 'plans',
-    params: {
-      id: data.id,
-    },
   })
-
-  return result
 }
-
-const { loading, error, run } = useAsyncFn(createPlan)
 </script>
 
 <template>
@@ -46,9 +30,14 @@ const { loading, error, run } = useAsyncFn(createPlan)
     <PlanForm
       v-model:name="newPlan.name"
       v-model:description="newPlan.description"
-      :error
-      :loading
-      @submit="run()"
-    />
+      @submit="createPlan"
+    >
+      <template #submit-button>
+        <BaseButton type="submit">
+          <IconLucidePlus />
+          Create new plan
+        </BaseButton>
+      </template>
+    </PlanForm>
   </div>
 </template>

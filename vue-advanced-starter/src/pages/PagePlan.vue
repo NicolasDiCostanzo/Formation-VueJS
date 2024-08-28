@@ -1,26 +1,20 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import PlanForm from '@/components/PlanForm.vue'
 import type { Plan } from '@/util/types'
-import { fetchWithThrow, useAsyncFn } from '@/util/async'
-import { wait } from '@/util/time'
+import { usePlanStore } from '@/stores/plan'
 
 const router = useRouter()
-
 const route = useRoute()
 const plan = ref<Plan>()
+
 plan.value = await fetch(`/api/plans/${route.params.id}`).then(r => r.json())
 
+const planStore = usePlanStore()
+
 async function updatePlan() {
-  await wait(1000)
-  const result = await fetchWithThrow(`/api/plans/${plan.value!.id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(plan.value),
-  }).then(r => r.json())
-  plan.value = result
+  await planStore.updatePlanOperation.run(plan.value!)
 
   router.push({
     name: 'plans',
@@ -30,7 +24,13 @@ async function updatePlan() {
   })
 }
 
-const { loading, error, run } = useAsyncFn(updatePlan)
+async function deletePlan() {
+  await planStore.deletePlanOperation.run(plan.value!.id)
+
+  router.push({
+    name: 'plans',
+  })
+}
 </script>
 
 <template>
@@ -43,9 +43,25 @@ const { loading, error, run } = useAsyncFn(updatePlan)
       v-if="plan"
       v-model:name="plan.name"
       v-model:description="plan.description"
-      :error
-      :loading
-      @submit="run()"
-    />
+      :loading="planStore.updatePlanOperation.loading"
+      :error="planStore.updatePlanOperation.error ?? planStore.deletePlanOperation.error"
+      @submit="updatePlan"
+    >
+      <template #submit-button>
+        <BaseButton type="submit" :loading="planStore.updatePlanOperation.loading">
+          <IconLucideCheck />
+          Save changes
+        </BaseButton>
+      </template>
+      <template #delete-button>
+        <BaseButton
+          type="button" :loading="planStore.deletePlanOperation.loading"
+          @click="deletePlan"
+        >
+          <IconLucideTrash />
+          Delete
+        </BaseButton>
+      </template>
+    </PlanForm>
   </div>
 </template>

@@ -1,17 +1,28 @@
 <script lang="ts" setup>
+import { onMounted, ref } from 'vue'
+
 defineOptions({
   inheritAttrs: false,
 })
-defineProps<{
+const props = defineProps<{
   label: string
   textarea?: boolean
   required: boolean
   maxLength?: number
+  autofocus?: boolean
 }>()
 
 const modelValue = defineModel<string>({ required: true })
 
 const randomId = `input-${Math.round(Math.random() * 10000)}`
+const inputEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
+
+if (props.autofocus) {
+  onMounted(() => {
+    inputEl.value?.focus()
+    inputEl.value?.select()
+  })
+}
 </script>
 
 <template>
@@ -33,6 +44,7 @@ const randomId = `input-${Math.round(Math.random() * 10000)}`
         class: undefined,
       }"
       :id="randomId"
+      ref="inputEl"
       :required
       :value="modelValue"
       class="border border-gray-300 rounded p-2 focus:border-primary-500 outline-none"

@@ -1,5 +1,26 @@
 <script lang="ts" setup>
-// TODO
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const username = ref('')
+const password = ref('')
+const route = useRoute()
+const router = useRouter()
+
+const user = useUserStore()
+
+async function login() {
+  await user.loginOperation.run(username.value, password.value)
+  const routeName = route.query.redirect
+
+  if (typeof routeName === 'string') {
+    router.replace({ name: routeName })
+  }
+  else {
+    router.replace({ name: 'home' })
+  }
+}
 </script>
 
 <template>
@@ -7,11 +28,29 @@
     <form
       class="w-full max-w-[500px] p-6 flex flex-col gap-6 border border-gray-100 rounded-xl"
     >
-      <!-- Inputs -->
-      
-      <!-- Submit button -->
+      <pre>{{ `${username} ${password}` }}</pre>
+      <BaseInput
+        v-model="username"
+        label="Username"
+        :textarea="false"
+        :required="true"
+        :max-length="50"
+      />
 
-      <!-- <BaseError /> -->
+      <BaseInput
+        v-model="password"
+        label="Password"
+        :textarea="false"
+        :required="true"
+        :max-length="20"
+      />
+
+      <BaseButton type="submit" :loading="user.loginOperation.loading" @click="login">
+        <IconLucideCheck />
+        Login
+      </BaseButton>
+
+      <BaseError :error="user.loginOperation.error" />
     </form>
   </div>
 </template>
