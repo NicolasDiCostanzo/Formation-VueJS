@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { useNotificationStore } from '@/stores/notification'
 
 const username = ref('')
 const password = ref('')
@@ -9,10 +10,16 @@ const route = useRoute()
 const router = useRouter()
 
 const user = useUserStore()
+const notification = useNotificationStore()
 
 async function login() {
   await user.loginOperation.run(username.value, password.value)
   const routeName = route.query.redirect
+
+  notification.notify({
+    message: 'Welcome!',
+    type: 'success',
+  })
 
   if (typeof routeName === 'string') {
     router.replace({ name: routeName })

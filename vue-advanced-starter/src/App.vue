@@ -16,6 +16,6 @@ import AppHeader from './components/AppHeader.vue'
       </Suspense>
     </RouterView>
 
-    <!-- <AppNotifications /> -->
+    <AppNotifications />
   </div>
 </template>
