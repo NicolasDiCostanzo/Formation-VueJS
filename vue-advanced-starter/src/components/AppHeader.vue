@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-// TODO
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const user = userStore.currentUser
 </script>
 
 <template>
@@ -19,11 +22,11 @@
 
     <div class="flex-1" />
 
-    <!-- <RouterLink to="/settings" class="p-2 inline-flex items-center gap-1" active-class="text-primary-500">
+    <RouterLink v-if="user" to="/settings" class="p-2 inline-flex items-center gap-1" active-class="text-primary-500">
       <IconLucideUserCog />
-      my name here
-    </RouterLink> -->
-    <RouterLink to="/login" class="p-2 inline-flex items-center gap-1">
+      {{ user.username }}
+    </RouterLink>
+    <RouterLink v-else to="/login" class="p-2 inline-flex items-center gap-1">
       <IconLucideLogIn />
       Login
     </RouterLink>
