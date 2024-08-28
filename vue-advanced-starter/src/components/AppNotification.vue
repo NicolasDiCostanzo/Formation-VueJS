@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 import type { AppNotification } from '@/util/types'
-// TODO
+
+defineProps<{
+  notification: AppNotification
+}>()
+
+defineEmits<{
+  close: []
+}>()
 </script>
 
 <template>
@@ -10,6 +17,7 @@ import type { AppNotification } from '@/util/types'
       'bg-green-50 text-green-700 border-green-200': notification.type === 'success',
       'bg-red-50 text-red-700 border-red-200': notification.type === 'error',
     }"
+    @click="$emit('close')"
   >
     <div
       class="absolute top-0 left-0 w-full h-1 rounded-t-lg overflow-hidden"
@@ -23,7 +31,10 @@ import type { AppNotification } from '@/util/types'
       />
     </div>
 
-    <!-- TODO Icon here -->
+    <component
+      :is="notification.icon"
+      v-if="notification.icon"
+    />
     <div>
       {{ notification.message }}
     </div>
